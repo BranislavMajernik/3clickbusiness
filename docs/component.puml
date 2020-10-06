@@ -1,0 +1,25 @@
+@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Dynamic.puml
+
+Container(spa, "Single Page Application", "javascript React.js", "Provides all the internet functionality to customers via thier web browser.")
+ContainerDb(db, "Database", "Oracle Database Schema", "Stores user registration information hashed authentication credentials, access logs, etc.")
+Container_Boundary(bc, "API Gateway"){
+    Component(signin, "Sign In Controller", "Java Helidon", "Allows users to sign in to the One Click Market System")
+    Component(security, "Security Component", "Java Helidon", "Provides functionality related to signing in, changing passwords, etc.")
+}
+
+Rel(spa, signin, "Submits credentials to", "JSON/HTTPS")
+Rel(signin, security, "Calls isAuthenticated() on")
+Rel(security, db, "select * from users where username = ?", "JDBC")
+
+Container(api, "API Gateway", "java Helidon", "Provides all the internet functionality to customers via thier web browser.")
+ContainerDb(db_user, "Database", "Oracle Database Schema", "Stores user registration information hashed authentication credentials, access logs, etc.")
+Container_Boundary(uda, "User Data"){
+    Component(contr, "CRUD User Data Controller", "Java Helidon", "Allows manage CRUD users data.")
+    Component(contr, "Profile Data Controller", "Java Helidon", "Allows manage users profile.")
+}
+
+Rel(api, contr, "Submits credentials to", "JSON/HTTPS")
+Rel(contr, db_user, "select * from users where username = ?", "JDBC")
+
+@enduml

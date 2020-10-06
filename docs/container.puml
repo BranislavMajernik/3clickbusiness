@@ -1,0 +1,56 @@
+@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Container_Boundary(spa, "Single Page Application") {
+    Component(routing, "Routing", "React router", "Handler client side routing")
+    Component(store, "Data Store", "Redux", "The central object holding the application state")
+    Component(login, "Login form", "React Class", "The login page")
+    Component(user, "Profile Page", "React Class", "The page where the logged in user can view and edit his/her information")
+    Component(product, "Product Page", "React Class", "The page where the logged in user can create and manage his/her product")
+    Component(shop, "Shop Page", "React Class", "The page where the logged in or anonymous user can buy product")
+}
+
+Container_Boundary(cmlc, "3Click Market core") {
+    Component(api, "API gateway", "java Helidon framework", "Delivers the content and the one click market single page application.")
+    Component(userc, "User Data", "java Helidon framework", "The object holding user data")
+    Component(productc, "Product Data", "java Helidon framework", "The object holding product data")
+    Component(shopc, "Shop Data", "java Helidon framework", "The object holding shop data")
+}
+
+Container_Boundary(cmlco, "3Click Market communication") {
+    Component(bcm, "Blockchain client/peer", "Golang", "Invoking Endorsment peer in B2B blockchain.")
+    Component(notm, "Viber, Facebook gateway", "NATS messaging/Golang", "Sending messages to social network communication platform2." )
+}
+
+Container_Boundary(cmlanalytics, "3Click Market Analytics") {
+    Component(acm, "Analytics view and API", "Node JS, R language", "Display charts and recommendations.")
+    Component(acmre, "ML Recomendation Engine", "Python", "Machine learning engine." )
+}
+
+
+System_Ext(csbc, "CrossSellBlockchain", "Stores all tamper resistant information about channel crossales, customers, transactions, etc.")
+System_Ext(ns, "Notification system", "Notification on social networks, Facebook Messanger, Viber.")
+System_Ext(pbs, "Payment Gateway Banking System", "Doing all payments on market.")
+
+
+Rel(spa, api, "Uses", "JSON/HTTPS")
+Rel(cmlc, cmlco, "Uses", "Redis/Coherence")
+Rel(cmlanalytics, cmlc, "Uses", "SQL/Python")
+
+Rel(login, store, "Uses");
+Rel(routing, store, "Uses");
+Rel(product, store, "Uses");
+Rel(user, store, "Uses");
+Rel(shop, store, "Uses");
+
+Rel(api, shopc, "Expose");
+Rel(api, productc, "Expose");
+Rel(api, userc, "Expose");
+
+Rel(bcm, csbc, "Use");
+Rel(notm, ns, "Use");
+Rel(shopc, pbs, "Use");
+
+@enduml

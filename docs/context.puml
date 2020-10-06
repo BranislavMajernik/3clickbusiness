@@ -1,0 +1,23 @@
+@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(pbc, "3Click Customer", "A customer of the market, with personal profile.")
+Person(apbc, "Anonymous Click Consumer", "A anonymous customer of the market, no personal profile.")
+Person_Ext(epbc, "External Analytics Customer", "A customer of the data market, buy/sell analytics.")
+System(cml, "3Click Market system", "Allows customers to create, manage, view information about their market accounts, and make payments.")
+System(aml, "3Click Market Analytics and Recommendation system", "Allows customers to view information and recommendation about their accounts and make activities.")
+System_Ext(ns, "Notification system", "Notification on social networks, Facebook Messanger, Viber.")
+System_Ext(pbs, "Payment Gateway Banking System", "Doing all payments on market.")
+System_Ext(csbc, "CrossSellBlockchain", "Stores all tamper resistant information about channel crossales, customers, transactions, etc.")
+
+Rel(pbc, cml, "Uses")
+Rel(apbc, cml, "Uses")
+Rel(ns, pbc, "Sends notification to", "Viber,Messenger,e-mail")
+Rel(cml, ns, "Sends messages", "NATS")
+Rel(cml, pbs, "Uses")
+Rel(cml, csbc, "Uses")
+Rel(cml, aml, "Uses")
+Rel(epbc, aml, "Uses")
+@enduml
